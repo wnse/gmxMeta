@@ -1,6 +1,8 @@
 # %%
 import pandas as pd
 import json
+import os
+from MetaAlphaPng import alph_png
 
 def read_res(res_json_file, rep_json_file, config_excel):
     rep_json = {}
@@ -258,12 +260,19 @@ def Rep2Excel(out_excel, res_dict_list, min_sample=3):
         writer.close()
     except Exception as e:
         print(f"ERROR write excel {out_excel} {e}")
+
+    try:
+        # out_png = os.path.splitext(out_excel)[0]+'.png'
+        out_png = os.path.join(os.path.split(out_excel)[0], '4.alph.png')
+        alph_png(diversity_res_df, out_png)
+    except Exception as e:
+        print(f"ERROR write png {out_png} {e}")
         
 
 
 # %%
-# res_json_file = 'total_res_dict.json'
-# rep_json_file = 'total_rep_dict.json'
+# res_json_file = 'test_res.json'
+# rep_json_file = 'test_res.rep.json'
 # config_file = 'network_test_data.xlsx'
 # out_json_dict = Rep2Dict(res_json_file, rep_json_file, config_file)
 
@@ -271,6 +280,6 @@ def Rep2Excel(out_excel, res_dict_list, min_sample=3):
 
 # %%
 # with open('total_rep.json', 'w') as h:
-#     json.dump(out_json_dict, h, ensure_ascii=False, indent=2)
+    # json.dump(out_json_dict, h, ensure_ascii=False, indent=2)
 
 

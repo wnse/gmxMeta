@@ -6,7 +6,7 @@ import pandas as pd
 from FunctionNet.Function import Function
 
 class FunctionNet(Function):
-    plt.rcParams['font.sans-serif'] = ['SimHei']
+    # plt.rcParams['font.sans-serif'] = ['SimHei']
     def __init__ (self, df_edge, df_target=pd.DataFrame(), df_source=pd.DataFrame()):
         if self.check_repeat(df_edge, ['target','source'], 'edge'):
             self.g = nx.from_pandas_edgelist(df_edge, edge_attr=True)

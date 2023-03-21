@@ -62,12 +62,15 @@ def check_old_samples(config_file, db_dir, sample_id, latest_sample_n=3, outputd
 
 # %%
 def check_samples(config_file, db_dir, sample_id, latest_sample_n=3, outputdir='.', old_db_dir=None):
-    df_samples = pd.read_csv(os.path.join(db_dir, 'ID.csv'),index_col=0, header=None)
-    df_samples = df_samples.sort_values(1, ascending=False).loc[sample_id]
-    if df_samples.shape[0] > 1:
-        sample_names = df_samples[1].head(latest_sample_n).to_list()
-    else:
-        sample_names = df_samples.to_list()
+    df_samples = pd.read_csv(os.path.join(db_dir, 'ID.csv'),index_col=0, header=None).drop_duplicates(subset=1)
+    df_samples = df_samples.sort_values(1, ascending=False)
+    sample_names = []
+    if sample_id in df_samples.index:
+        df_samples = df_samples.loc[sample_id]
+        if df_samples.shape[0] > 1:
+            sample_names = df_samples[1].head(latest_sample_n).to_list()
+        else:
+            sample_names = df_samples.to_list()
     rep_dict_list = []
 
     if sample_names:
@@ -105,5 +108,4 @@ def check_samples(config_file, db_dir, sample_id, latest_sample_n=3, outputdir='
 
 # final_out_excel = 'test_out.xlsx'
 # Rep2Excel(final_out_excel, rep_dict_list)
-
 

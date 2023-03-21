@@ -12,17 +12,17 @@ help()
 
 		-v --version    	Print the version info.
 
-		-i1 --infastq    	The input fastq R1.
+		-i1 --infastq1    	The input fastq R1.
 
-		-i2 --infastq    	The input fastq R2.
+		-i2 --infastq2    	The input fastq R2.
 
 		-o --out			The output files prefix.
 
 		-t --threads    	The threads for processing.
 
-		-n --nt_db			The humann nucleotide-database directory.
+		-n --nt_db			The humann chocophlan-database directory.
 
-		-p --pro_db			The humann protein-database directory.
+		-p --pro_db			The humann uniref-database directory.
 
 		-m --mpa_db			The metaphlan bowtie2db directory.
 
@@ -81,17 +81,17 @@ source /opt/conda/bin/activate
 conda activate humann
 
 fastp -w ${threads} -i ${infq1} -I ${infq2} -o ${out}/clean_1.fq.gz -O ${out}/clean_2.fq.gz -j ${out}/fastp.json -h ${out}/fastp.html
-cat ${out}/clean_1.fq.gz ${out}/clean_2.fq.gz > ${out}/clean.fq.gz
-humann --threads ${threads} --bypass-translated-search --metaphlan-options "--bowtie2db ${mpa_db}" --nucleotide-database ${nt_db} --protein-database {pro_db} --input ${out}/clean.fq.gz --output ${out}/humann
-humann_split_stratified_table --input ${out}/humann/clean_pathabundance.tsv --output ${out}/humann/
+cat ${out}/clean_1.fq.gz ${out}/clean_2.fq.gz > ${out}/final.fq.gz
+humann --threads ${threads} --bypass-translated-search --metaphlan-options "--bowtie2db ${mpa_db}" --nucleotide-database ${nt_db} --protein-database ${pro_db} --input ${out}/final.fq.gz --output ${out}/humann
+humann_split_stratified_table --input ${out}/humann/final_pathabundance.tsv --output ${out}/humann/
 
 conda activate megahit
 megahit -t ${threads} -1 ${out}/clean_1.fq.gz -2 ${out}/clean_2.fq.gz -o ${out}/megahit_out --min-contig-len 1500
 
 
 conda activate rgi
-rgi load -i ${rgi_db_json} --local
-rgi main -n ${threads} --input_sequence ${out}/megahit_out/final.contigs.fa --output_file ${out}/card --local -a DIAMOND
+rgi load -i ${rgi_db_json}
+rgi main -n ${threads} --input_sequence ${out}/megahit_out/final.contigs.fa --output_file ${out}/card -a DIAMOND
 
 bowtie2-build --threads ${threads} ${out}/final.contigs.fa.temp.contigToORF.fsa ${out}/ORF-index
 bowtie2 -p ${threads} -x ${out}/ORF-index -1 ${out}/clean_1.fq.gz -2 ${out}/clean_2.fq.gz -S ${out}/raw2orf.sam

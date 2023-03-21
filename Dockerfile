@@ -23,7 +23,7 @@ RUN echo Asia/Shanghai > /etc/timezone
 RUN cd /data \
 && wget -O Miniconda3-latest-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
-&& rm -rf Miniconda3-py38_22.11.1-1-Linux-x86_64.sh \
+&& rm -rf Miniconda3-latest-Linux-x86_64.sh \
 && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
         && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
 && /opt/conda/bin/conda clean -afy \

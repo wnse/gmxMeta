@@ -128,7 +128,7 @@ def get_rg_res(rep_json, df_target):
 def get_pathway_res(rep_json, df_target):
     df_pathway = df_target[df_target['tag'].isin(['代谢能力评估'])].copy()
     df_pathway['risk'] = df_pathway['target'].map(rep_json)
-    risk_exp = {1:'偏高',0:'正常'}
+    risk_exp = {1:'偏高',0:'正常',-1:"偏低"}
     df_pathway['检测结果'] = df_pathway['risk'].map(risk_exp)
     dict_pathway = df_pathway.set_index('target')['检测结果'].to_dict()
 
@@ -186,9 +186,12 @@ def Rep2Dict(res_json_file, rep_json_file, config_file):
     df_summary['高度风险'] = disease_res_list[0]
     df_summary['低风险'] = disease_res_list[1]
     pathway_tags = ['能量代谢', '碳水化合物代谢', '脂类代谢', '蛋白质代谢', '必须氨基酸合成', '维生素合成', 
-                    '短链脂肪酸合成', '抗氧化能力', '有害物代谢', '脂多糖合成', '磷脂酶C']
+                    '短链脂肪酸合成', '抗氧化能力', '有害物代谢', '脂多糖合成']
     for tag, res in zip(pathway_tags, pathway_res_dict):
-        df_summary[tag] = pathway_res_dict[tag]
+        if tag in ['能量代谢', '碳水化合物代谢', '脂类代谢', '蛋白质代谢']:
+            df_summary[tag] = '正常'
+        else:
+            df_summary[tag] = pathway_res_dict[tag]
     df_summary['抗生素暴露史'] = rg_res
     df_summary['毒力因子'] = vf_res
     df_summary['总结'] = ''

@@ -48,6 +48,7 @@ def get_enterotype_res(res_json, rep_json, df_micro_meta, df_edge):
     df_enterotype_res['检测结果（%）'] = df_enterotype_res.index.map(res_json['tax_value_dict']['relative_abundance'])
     if '中文名称' in df_enterotype_res.columns:
         df_enterotype_res = df_enterotype_res[['中文名称','检测结果（%）']]
+    df_enterotype_res = df_enterotype_res.fillna(0)
     return enterotype_res, df_enterotype_res
 
 def get_diversity_res(res_json, rep_json, df_edge):

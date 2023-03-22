@@ -1,6 +1,6 @@
 import os
 import gzip
-import json
+import sys
 import shutil
 import subprocess
 import argparse
@@ -131,8 +131,6 @@ def runGmx(final_out_excel, config_file, member_name, sample_name, db_dir, old_d
 if __name__ == "__main__":
 
     shell_path = os.path.realpath(os.path.split(__file__)[0])
-    config_excel = os.path.join(shell_path, 'config_excel.xlsx')
-
     parse = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parse.add_argument('-i1', '--infastq1', help=f'input fastq R1', required=True)
     parse.add_argument('-i2', '--infastq2', help=f'input fastq R2', required=True)
@@ -143,10 +141,17 @@ if __name__ == "__main__":
     parse.add_argument('-DB', '--meta_db', help=f'metageome analysis database dir, including humann, metaphlan, CARD, VFDB etc', default='/meta_db/')
     parse.add_argument('--shell', help=f'meta shell name in {shell_path}', default=os.path.join(shell_path, 'run_humann.sh'))
     parse.add_argument('--tmp', help=f'tmp dir for analysis', default='/data/tmp')
+    parse.add_argument('--config', help=f'function config', default=f"{os.path.join(shell_path, 'function_config.xlsx')}")
+    parse.add_argument('--debug', help=f'delete tmp result', action='store_true')
     parse.add_argument('-t', '--threads', help=f'threads for analysis', default=10)
 
     args = parse.parse_args()  
     args.tmp_dir = os.path.join(args.tmp, args.sample_name)
+
+    config_excel = args.config
+    if not os.path.isfile(config_excel):
+        sys.exit(f"{config_excel} not exists")
+
     if not os.path.join(args.tmp):
         logging.info(f'{args.tmp} not exstis, mkdir...')
         os.mkdirs(args.tmp)
@@ -166,5 +171,9 @@ if __name__ == "__main__":
     mvFiles(args.tmp_dir, args.db_dir, args.sample_name, args.member_name)
     final_out_excel = os.path.join(args.out_dir, '1.info.xlsx')
     runGmx(final_out_excel, config_excel, args.member_name, args.sample_name, args.db_dir, old_db_dir=None, outdir=args.out_dir)
-
-    shutil.rmtree(args.tmp_dir)
+    if not args.debug:
+        try:
+            shutil.rmtree(args.tmp_dir)
+            logging.info(f"remove tmp {args.tmp_dir} {e}")
+        except Exception as e:
+            logging.error(f"remove tmp {args.tmp_dir} {e}")

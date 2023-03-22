@@ -167,13 +167,17 @@ if __name__ == "__main__":
                         format='%(asctime)s %(levelname)s %(message)s',
                         datefmt="%Y-%m-%d %H:%m:%S")
 
-    res = runMeta(**args.__dict__)
-    mvFiles(args.tmp_dir, args.db_dir, args.sample_name, args.member_name)
-    final_out_excel = os.path.join(args.out_dir, '1.info.xlsx')
-    runGmx(final_out_excel, config_excel, args.member_name, args.sample_name, args.db_dir, old_db_dir=None, outdir=args.out_dir)
+    try:
+        res = runMeta(**args.__dict__)
+        mvFiles(args.tmp_dir, args.db_dir, args.sample_name, args.member_name)
+        final_out_excel = os.path.join(args.out_dir, '1.info.xlsx')
+        runGmx(final_out_excel, config_excel, args.member_name, args.sample_name, args.db_dir, old_db_dir=None, outdir=args.out_dir)
+    except Exception as e:
+        logging.error(f"LAST:{e}")
     if not args.debug:
         try:
             shutil.rmtree(args.tmp_dir)
             logging.info(f"remove tmp {args.tmp_dir} {e}")
         except Exception as e:
             logging.error(f"remove tmp {args.tmp_dir} {e}")
+            

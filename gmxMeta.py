@@ -177,6 +177,6 @@ if __name__ == "__main__":
     if not args.debug:
         try:
             shutil.rmtree(args.tmp_dir)
-            logging.info(f"remove tmp {args.tmp_dir} {e}")
+            logging.info(f"remove tmp {args.tmp_dir}")
         except Exception as e:
             logging.error(f"remove tmp {args.tmp_dir} {e}")

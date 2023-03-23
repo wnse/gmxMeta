@@ -2,6 +2,8 @@
 import pandas as pd
 import numpy as np
 import json
+import logging
+import os
 
 # %%
 def cal_simpson(df_ratio, N=1000):
@@ -68,24 +70,42 @@ def get_vf_ratio(raw2orf_file, vf_res_file, sample_name=None):
 
 
 # %%
-def get_Meta_res(out_file, metaphlan_res_file, raw2orf_file=None, rgi_res_file=None, vf_res_file=None, pathabundance_res_file=None, sample_name=None):
+def get_Meta_res(out_file, metaphlan_res_file=None, raw2orf_file=None, rgi_res_file=None, vf_res_file=None, pathabundance_res_file=None, sample_name=None):
     tax_value_dict = {}
     alpha_dict = {}
     if metaphlan_res_file:
-        tax_value_dict, alpha_dict = get_tax_ratio(metaphlan_res_file)
+        if os.path.isfile(metaphlan_res_file):
+            tax_value_dict, alpha_dict = get_tax_ratio(metaphlan_res_file)
+        else:
+            logging.error(f"not exists {metaphlan_res_file}")
 
     rgi_res_dict = {}
     if raw2orf_file and rgi_res_file:
-        rgi_res_dict = get_aro_ratio(raw2orf_file, rgi_res_file, sample_name=sample_name)
+        if os.path.isfile(raw2orf_file):
+            if os.path.isfile(rgi_res_file):
+                rgi_res_dict = get_aro_ratio(raw2orf_file, rgi_res_file, sample_name=sample_name)
+            else:
+                logging.error(f"not exists {rgi_res_file}")
+        else:
+            logging.error(f"not exists {raw2orf_file}")
 
     vf_res_dict = {}
     if raw2orf_file and vf_res_file:
-        vf_res_dict = get_vf_ratio(raw2orf_file, vf_res_file, sample_name=sample_name)
+        if os.path.isfile(raw2orf_file):
+            if os.path.isfile(vf_res_file):
+                vf_res_dict = get_vf_ratio(raw2orf_file, vf_res_file, sample_name=sample_name)
+            else:
+                logging.error(f"not exists {vf_res_file}")
+        else:
+            logging.error(f"not exists {raw2orf_file}")
 
     pathway_res_dict = {}
     if pathabundance_res_file:
-        pathway_res_dict = get_pathabundance_ratio(pathabundance_res_file, sample_name=sample_name)
-    
+        if os.path.isfile(pathabundance_res_file):
+            pathway_res_dict = get_pathabundance_ratio(pathabundance_res_file, sample_name=sample_name)
+        else:
+            logging.error(f"not exists {pathabundance_res_file}")
+            
     total_res_dict = {"tax_value_dict":tax_value_dict,
                     "alpha_dict":alpha_dict,
                     "rgi_res_dict":rgi_res_dict, 

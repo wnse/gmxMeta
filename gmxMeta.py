@@ -116,7 +116,7 @@ def mvFiles(source_dir, target, sample_id, member_id):
     except Exception as e:
         logging.error(f'echo ID error {member_id} {sample_id}:{e}')
 
-def runGmx(final_out_excel, config_file, member_name, sample_name, db_dir, old_db_dir=None, outdir='.'):
+def runGmx(final_out_excel, config_file, member_name, sample_name, db_dir, old_db_dir=None):
     if not old_db_dir:
         old_db_dir = os.path.join(db_dir, 'old')
         if not os.path.isdir(old_db_dir):
@@ -171,7 +171,7 @@ if __name__ == "__main__":
         res = runMeta(**args.__dict__)
         mvFiles(args.tmp_dir, args.db_dir, args.sample_name, args.member_name)
         final_out_excel = os.path.join(args.out_dir, '1.info.xlsx')
-        runGmx(final_out_excel, config_excel, args.member_name, args.sample_name, args.db_dir, old_db_dir=None, outdir=args.out_dir)
+        runGmx(final_out_excel, config_excel, args.member_name, args.sample_name, args.db_dir, old_db_dir=None)
     except Exception as e:
         logging.error(f"LAST:{e}")
     if not args.debug:
@@ -180,4 +180,3 @@ if __name__ == "__main__":
             logging.info(f"remove tmp {args.tmp_dir} {e}")
         except Exception as e:
             logging.error(f"remove tmp {args.tmp_dir} {e}")
-            

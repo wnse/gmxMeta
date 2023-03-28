@@ -4,14 +4,10 @@
 
 ## 命令行
 ```
-docker run --rm -v {工作目录}:/data/ gmxmeta python /gmxMeta/gmxMeta.py -i1 {R1端fastq} -i2 {R2端fastq} -n {样本ID} -N {会员ID} -db {样本最终结果目录} -o {样本报告结果目录} --tmp {文件暂存目录} -DB {参考数据库目录} -t {CPU数量}
+docker run --rm -v {数据目录}:{数据目录} -v{报告结果目录}:{报告结果目录} -v /home/:/data_for_tmp -v /home/hdd/gmxMeta/:/data/ gmxmeta python /gmxMeta/gmxMeta.py -t {CPU数量} --tmp /data_for_tmp/tmp -db /data/db/ -DB /data/metaDB/ -i1 {R1端fastq} -i2 {R2端fastq} -o {样本报告结果目录}  -n {样本ID} -N {会员ID} 
 ```
 
-举例：
-
-```
-docker run --rm -v /home/hdd/yangk_test/:/data/ gmxmeta python /gmxMeta/gmxMeta.py -i1 /data/test_data/M202302160067_test_1.fastq.gz -i2 /data/test_data/M202302160067_test_2.fastq.gz -n M202302160067_test -N nlwushubin -db /data/db/ -o /data/test_out/M202302160067_test -DB /data/metaDB/ --tmp /data/tmp --debug -t 16 1>/home/hdd/yangk_test/M202302160067_test.log 2>/home/hdd/yangk_test/M202302160067_test.log
-```
+举例：shell_cmd.xlsx
 
 ## 目录结构
 
@@ -24,6 +20,7 @@ docker run --rm -v /home/hdd/yangk_test/:/data/ gmxmeta python /gmxMeta/gmxMeta.
 |tmp|分析过程文件暂存位置||--tmp|
 |out|报告结果文件|`1.info.xlsx`、`4.alph.png`|-o|
 
-
-
+## 正式使用前：
+1. 更新db目录中的old目录(以防丢失样本结果)
+2. 删除db目录中的`ID.csv`
 

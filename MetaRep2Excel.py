@@ -136,7 +136,7 @@ def get_pathway_res(rep_json, df_target):
 
 
 
-def get_tax_top(res_json, top=10):
+def get_tax_top(res_json, top=9):
     df_tax = pd.DataFrame.from_dict(res_json['tax_value_dict']['tax_level'], orient='index', columns=['tax_level'])
     df_ratio = pd.DataFrame.from_dict(res_json['tax_value_dict']['relative_abundance'], orient='index', columns=['relative_abundance'])
     df_tax = pd.merge(df_tax, df_ratio, left_index=True, right_index=True)

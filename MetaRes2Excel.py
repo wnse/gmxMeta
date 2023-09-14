@@ -44,7 +44,7 @@ def check_old_samples(config_file, db_dir, sample_id, latest_sample_n=3, outputd
     s_file = os.path.join(db_dir, 'sp')
     alpha_file = os.path.join(db_dir, 'alph')
 
-    df_samples = pd.read_excel(os.path.join(db_dir, 'ID.xlsx'), index_col=0)
+    df_samples = pd.read_excel(os.path.join(db_dir, 'ID.xlsx'), index_col=0, dtype={'会员ID':str})
     sample_names = df_samples[df_samples['会员ID'] == sample_id].sort_values(by='采样时间', ascending=False).head(latest_sample_n)['样本ID'].to_list()
 
     rep_dict_list = []

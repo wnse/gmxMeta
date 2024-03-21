@@ -14,6 +14,7 @@ def cal_shannon(df_ratio):
 
 def get_tax_ratio(metaphlan_res_file):
     df_metaphlan_res = pd.read_csv(metaphlan_res_file, sep='\t', skiprows=4)
+    df_metaphlan_res['taxonomy_level'] = df_metaphlan_res['#clade_name'].str.split('|').str[-1]
     df_metaphlan_res['tax_level'] = df_metaphlan_res['#clade_name'].str.split('|').str[-1].str.split('__').str[0]
     df_metaphlan_res['taxonomy'] = df_metaphlan_res['#clade_name'].str.split('|').str[-1].str.split('__').str[1]
     df_ratio = df_metaphlan_res[df_metaphlan_res['tax_level'] == 's']['relative_abundance']
@@ -21,6 +22,7 @@ def get_tax_ratio(metaphlan_res_file):
     alpha_shannon = cal_shannon(df_ratio)
 
     taxonomy_dict = df_metaphlan_res.set_index('taxonomy')[['relative_abundance','tax_level']].to_dict()
+    taxonomy_dict.update({'relative_abundance_level':df_metaphlan_res.set_index('taxonomy_level')['relative_abundance'].to_dict()})
     alpha_dict = {'Shannon':alpha_shannon, 'Simpson':alpha_simpson,}
 
     return taxonomy_dict, alpha_dict

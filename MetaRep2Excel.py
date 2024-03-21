@@ -137,14 +137,17 @@ def get_pathway_res(rep_json, df_target):
 
 
 def get_tax_top(res_json, top=9):
-    df_tax = pd.DataFrame.from_dict(res_json['tax_value_dict']['tax_level'], orient='index', columns=['tax_level'])
-    df_ratio = pd.DataFrame.from_dict(res_json['tax_value_dict']['relative_abundance'], orient='index', columns=['relative_abundance'])
-    df_tax = pd.merge(df_tax, df_ratio, left_index=True, right_index=True)
+    # df_tax = pd.DataFrame.from_dict(res_json['tax_value_dict']['tax_level'], orient='index', columns=['tax_level'])
+    # df_ratio = pd.DataFrame.from_dict(res_json['tax_value_dict']['relative_abundance'], orient='index', columns=['relative_abundance'])
+    # df_tax = pd.merge(df_tax, df_ratio, left_index=True, right_index=True)
+    df_tax = pd.DataFrame.from_dict(res_json['tax_value_dict']['relative_abundance_level'], orient='index', columns=['relative_abundance'])
+    df_tax['tax_level'] = df_tax.index.str.split('__').str[0]
     
     tax_levels = ['p','g','s']
     top_tax_list = []
     for tax_level in tax_levels:
         df_tax_tmp = df_tax[df_tax['tax_level'] == tax_level]['relative_abundance'].sort_values(ascending=False)
+        df_tax_tmp.index = df_tax_tmp.index.str.split('__').str[1]
         df_top = df_tax_tmp.head(top)
         rest = sum(df_tax_tmp.to_list()[10:])
         if rest:
